@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Protocol
+from typing import Optional, Protocol, Callable
 from enum import Enum
 
 def is_float(s: str) -> bool:
@@ -22,7 +22,7 @@ class BinaryOperator(Enum):
     def __init__(
             self, 
             chars: list[str], 
-            operation: callable[[float, float], float],
+            operation: Callable[[float, float], float],
             precedence: int
         ):
         self._chars = chars
@@ -90,7 +90,7 @@ class Terminal(Node):
 class NonTerminal(Node):
     children: list[Node]
 
-    def __init__(self, *args):
+    def __init__(self, *args: Node):
         super().__init__()
         self.children = list(args)
 '''
@@ -102,12 +102,12 @@ factor -> number | '(' expr ')' | '-' factor
 def parse_tree(tokens: list[str]) -> Node:
     idx = 0
 
-    def peek() -> Optional[str]:
-        return tokens[idx] if idx < len(tokens) else None
+    def peek() -> str:
+        return tokens[idx]
 
-    def consume() -> Optional[str]:
+    def consume() -> str:
         nonlocal idx
-        res = tokens[idx] if idx < len(tokens) else None
+        res = tokens[idx]
         idx += 1
         return res
 
@@ -155,7 +155,7 @@ def parse_tree(tokens: list[str]) -> Node:
         return left
 
     root = expression()
-    if peek() is not None:
+    if idx < len(tokens):
         raise SyntaxError(f"Unexpected token {peek()!r}")
     return root
 
@@ -171,7 +171,8 @@ def infix_to_postfix(tokens: list[str]) -> list[str]:
             if len(node.children) == 2:
                 op, child = node.children
                 post_order_dfs(child, res)
-                res.append(op.val)
+                if isinstance(op, Terminal): #FOR TYPING
+                    res.append(op.val)
             else:
                 left, op, right = node.children
                 post_order_dfs(left, res)
