@@ -20,7 +20,9 @@ Supports:
 
 ## How to run
 
-```bash python main.py```
+```bash
+python main.py
+```
 
 ## Pipeline
 Input string -> Tokenizer -> Infix -> Parse Tree -> Postfix -> RPN calc -> Result
