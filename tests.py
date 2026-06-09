@@ -13,33 +13,33 @@ from calculator import (
 
 class TestUtils(unittest.TestCase):
 
-    def test_is_float_true(self):
+    def test_is_float_true(self) -> None:
         self.assertTrue(is_float("3.14"))
         self.assertTrue(is_float("10"))
         self.assertTrue(is_float("0.0"))
 
-    def test_is_float_false(self):
+    def test_is_float_false(self) -> None:
         self.assertFalse(is_float("abc"))
         self.assertFalse(is_float("+"))
         self.assertFalse(is_float(""))
 
 class TestBinaryOperator(unittest.TestCase):
 
-    def test_from_char(self):
+    def test_from_char(self) -> None:
         self.assertEqual(BinaryOperator.from_char("+"), BinaryOperator.ADD)
         self.assertEqual(BinaryOperator.from_char("-"), BinaryOperator.SUB)
         self.assertEqual(BinaryOperator.from_char("*"), BinaryOperator.MUL)
         self.assertEqual(BinaryOperator.from_char("/"), BinaryOperator.DIV)
         self.assertEqual(BinaryOperator.from_char("^"), BinaryOperator.EXP)
 
-    def test_operation(self):
+    def test_operation(self) -> None:
         self.assertEqual(BinaryOperator.ADD(2, 3), 5)
         self.assertEqual(BinaryOperator.SUB(5, 2), 3)
         self.assertEqual(BinaryOperator.MUL(3, 4), 12)
         self.assertEqual(BinaryOperator.DIV(10, 2), 5)
         self.assertEqual(BinaryOperator.EXP(2, 3), 8)
 
-    def test_all_chars_contains_basic(self):
+    def test_all_chars_contains_basic(self) -> None:
         chars = BinaryOperator.all_chars()
         for c in ["+", "-", "*", "/", "^"]:
             self.assertIn(c, chars)
@@ -47,53 +47,53 @@ class TestBinaryOperator(unittest.TestCase):
 
 class TestTokenizer(unittest.TestCase):
 
-    def test_simple_expression(self):
+    def test_simple_expression(self) -> None:
         self.assertEqual(
             tokenize("2+2"),
             ["2", "+", "2"]
         )
 
-    def test_complex_expression(self):
+    def test_complex_expression(self) -> None:
         self.assertEqual(
             tokenize("3+(4*5)"),
             ["3", "+", "(", "4", "*", "5", ")"]
         )
 
-    def test_spaces(self):
+    def test_spaces(self) -> None:
         self.assertEqual(tokenize(" 2 + 2 "), ["2", "+", "2"])
 
-    def test_decimal_numbers(self):
+    def test_decimal_numbers(self) -> None:
         self.assertEqual(tokenize("3.5+2.1"), ["3.5", "+", "2.1"])
 
-    def test_multi_digit_numbers(self):
+    def test_multi_digit_numbers(self) -> None:
         self.assertEqual(tokenize("123+456"), ["123", "+", "456"])
 
 
 class TestRPN(unittest.TestCase):
 
-    def test_basic_rpn(self):
+    def test_basic_rpn(self) -> None:
         self.assertEqual(
             calculate_rpn(["2", "3", "+"]),
             5
         )
 
-    def test_rpn_mixed_ops(self):
+    def test_rpn_mixed_ops(self) -> None:
         self.assertEqual(
             calculate_rpn(["2", "3", "4", "*", "+"]),
             14
         )
 
-    def test_rpn_unary_minus(self):
+    def test_rpn_unary_minus(self) -> None:
         self.assertEqual(
             calculate_rpn(["5", "-u"]),
             -5
         )
 
-    def test_rpn_invalid_stack(self):
+    def test_rpn_invalid_stack(self) -> None:
         with self.assertRaises(ValueError):
             calculate_rpn(["+"])
 
-    def test_rpn_unknown_token(self):
+    def test_rpn_unknown_token(self) -> None:
         with self.assertRaises(ValueError):
             calculate_rpn(["2", "?", "+"])
 
@@ -214,54 +214,54 @@ class TestRPN(unittest.TestCase):
 
 class TestParserAndPostfix(unittest.TestCase):
 
-    def test_postfix_simple(self):
+    def test_postfix_simple(self) -> None:
         tokens = ["2", "+", "3"]
         self.assertEqual(infix_to_postfix(tokens), ["2", "3", "+"])
 
-    def test_postfix_precedence(self):
+    def test_postfix_precedence(self) -> None:
         tokens = ["2", "+", "3", "*", "4"]
         self.assertEqual(
             infix_to_postfix(tokens),
             ["2", "3", "4", "*", "+"]
         )
     
-    def test_single_operand(self):
+    def test_single_operand(self) -> None:
         self.assertEqual(
             infix_to_postfix(["42"]),
             ["42"]
         )
 
-    def test_simple_addition(self):
+    def test_simple_addition(self) -> None:
         self.assertEqual(
             infix_to_postfix(["2", "+", "3"]),
             ["2", "3", "+"]
         )
 
-    def test_simple_subtraction(self):
+    def test_simple_subtraction(self) -> None:
         self.assertEqual(
             infix_to_postfix(["5", "-", "2"]),
             ["5", "2", "-"]
         )
 
-    def test_multiplication_precedence(self):
+    def test_multiplication_precedence(self) -> None:
         self.assertEqual(
             infix_to_postfix(["2", "+", "3", "*", "4"]),
             ["2", "3", "4", "*", "+"]
         )
 
-    def test_division_precedence(self):
+    def test_division_precedence(self) -> None:
         self.assertEqual(
             infix_to_postfix(["10", "-", "6", "/", "2"]),
             ["10", "6", "2", "/", "-"]
         )
 
-    def test_parentheses_override_precedence(self):
+    def test_parentheses_override_precedence(self) -> None:
         self.assertEqual(
             infix_to_postfix(["(", "2", "+", "3", ")", "*", "4"]),
             ["2", "3", "+", "4", "*"]
         )
 
-    def test_nested_parentheses(self):
+    def test_nested_parentheses(self) -> None:
         self.assertEqual(
             infix_to_postfix(
                 ["(", "2", "+", "(", "3", "*", "4", ")", ")"]
@@ -269,25 +269,25 @@ class TestParserAndPostfix(unittest.TestCase):
             ["2", "3", "4", "*", "+"]
         )
 
-    def test_exponent_precedence(self):
+    def test_exponent_precedence(self) -> None:
         self.assertEqual(
             infix_to_postfix(["2", "+", "3", "^", "4"]),
             ["2", "3", "4", "^", "+"]
         )
 
-    def test_decimal_operands(self):
+    def test_decimal_operands(self) -> None:
         self.assertEqual(
             infix_to_postfix(["3.5", "*", "2.1"]),
             ["3.5", "2.1", "*"]
         )
 
-    def test_negative_number_operand(self):
+    def test_negative_number_operand(self) -> None:
         self.assertEqual(
             infix_to_postfix(["-3.5", "+", "2"]),
             ["-3.5", "2", "+"]
         )
 
-    def test_complex_expression(self):
+    def test_complex_expression(self) -> None:
         self.assertEqual(
             infix_to_postfix(
                 ["3", "+", "4", "*", "2", "/", "(", "1", "-", "5", ")"]
@@ -295,19 +295,19 @@ class TestParserAndPostfix(unittest.TestCase):
             ["3", "4", "2", "*", "1", "5", "-", "/", "+"]
         )
     
-    def test_invalid_operand_raises(self):
+    def test_invalid_operand_raises(self) -> None:
         with self.assertRaises(SyntaxError):
             infix_to_postfix(["2", "+", "abc"])
 
-    def test_unmatched_left_parenthesis_raises(self):
+    def test_unmatched_left_parenthesis_raises(self) -> None:
         with self.assertRaises(SyntaxError):
             infix_to_postfix(["(", "2", "+", "3"])
 
-    def test_unmatched_right_parenthesis_raises(self):
+    def test_unmatched_right_parenthesis_raises(self) -> None:
         with self.assertRaises(SyntaxError):
             infix_to_postfix(["2", "+", "3", ")"])
     
-    def test_empty_input(self):
+    def test_empty_input(self) -> None:
         res: list[str] = []
         self.assertEqual(
             infix_to_postfix([]),
@@ -317,34 +317,34 @@ class TestParserAndPostfix(unittest.TestCase):
 
 class TestFullCalculator(unittest.TestCase):
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         self.assertEqual(calculate("2+2"), 4)
 
-    def test_precedence(self):
+    def test_precedence(self) -> None:
         self.assertEqual(calculate("2+3*4"), 14)
 
-    def test_parentheses(self):
+    def test_parentheses(self) -> None:
         self.assertEqual(calculate("(2+3)*4"), 20)
 
-    def test_power_right_associative(self):
+    def test_power_right_associative(self) -> None:
         self.assertEqual(calculate("2^3^2"), 512)
 
-    def test_power_left_side_grouping(self):
+    def test_power_left_side_grouping(self) -> None:
         self.assertEqual(calculate("(2^3)^2"), 64)
 
-    def test_unary_minus(self):
+    def test_unary_minus(self) -> None:
         self.assertEqual(calculate("-2+3"), 1)
 
-    def test_complex_expression(self):
+    def test_complex_expression(self) -> None:
         self.assertEqual(calculate("3+(4*5)-2^3"), 15)
 
-    def test_unary_minus_only(self):
+    def test_unary_minus_only(self) -> None:
         self.assertEqual(calculate("-5"), -5)
 
-    def test_double_negative(self):
+    def test_double_negative(self) -> None:
         self.assertEqual(calculate("--5+2"), 7)
 
-    def test_unary_in_expression(self):
+    def test_unary_in_expression(self) -> None:
         self.assertEqual(calculate("2*-3"), -6)
 
 if __name__ == "__main__":
