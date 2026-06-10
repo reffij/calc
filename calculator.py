@@ -83,9 +83,9 @@ class Node:
 class Terminal(Node):
     val: str
 
-    def __init__(self, val: str):
+    def __init__(self, val: Optional[str]): #Optional quick fix type checking
         super().__init__()
-        self.val = val
+        self.val = str(val)
 
 class NonTerminal(Node):
     children: list[Node]
@@ -102,17 +102,20 @@ factor -> number | '(' expr ')' | '-' factor
 def parse_tree(tokens: list[str]) -> Node:
     idx = 0
 
-    def peek() -> str:
-        return tokens[idx]
+    def peek() -> Optional[str]:
+        return tokens[idx] if idx < len(tokens) else None
 
-    def consume() -> str:
+    def consume() -> Optional[str]:
         nonlocal idx
-        res = tokens[idx]
+        res = tokens[idx] if idx < len(tokens) else None
         idx += 1
         return res
 
     def factor() -> Node:
         token = peek()
+
+        if token is None:
+            raise ValueError("Expected token but instead got NONE")
 
         if token == '-':
             consume()
